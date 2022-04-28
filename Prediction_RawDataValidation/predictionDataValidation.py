@@ -23,7 +23,7 @@ class Prediction_Data_Validation:
     def valuesFromSchema(self):
         """
         Description: This method extracts all the relevant information from pre-defined "Schema" file.
-        Output: LengthOfDateStampInFile, LengthOfTimeStampInFile, column_names, NumberOfColumns
+        Output: LengthOfFirstWordInFile, LengthOfSecondWordInFile, column_names, NumberOfColumns
         On Failure: Raise ValueError, KeyError, Exception 
         """
 
@@ -32,13 +32,13 @@ class Prediction_Data_Validation:
                 dic = json.load(f)
                 f.close()
             pattern = dic['SampleFileName']
-            LengthOfDateStampInFile = dic['LengthOfDateStampInFile']
-            LengthOfTimeStampInFile = dic['LengthOfTimeStampInFile']
+            LengthOfFirstWordInFile = dic['LengthOfFirstWordInFile']
+            LengthOfSecondWordInFile = dic['LengthOfSecondWordInFile']
             column_names = dic['ColName']
             NumberOfColumns = dic['NumberOfColumns']
 
             file = open("Prediction_Logs/valuesfromSchemaValidationLog.txt", 'a+')
-            message = "LengthOfDateStampInFile:: %s" %LengthOfDateStampInFile + "\t" + "LengthOfTimeStampInFile:: %s" %LengthOfTimeStampInFile + "\t" + "NumberofColumns:: %s" %NumberOfColumns + "\n"
+            message = "LengthOfFirstWordInFile:: %s" %LengthOfFirstWordInFile + "\t" + "LengthOfSecondWordInFile:: %s" %LengthOfSecondWordInFile + "\t" + "NumberofColumns:: %s" %NumberOfColumns + "\n"
             self.logger.log(file, message)
 
             file.close()
@@ -61,7 +61,7 @@ class Prediction_Data_Validation:
             file.close()
             raise e
 
-        return LengthOfDateStampInFile, LengthOfTimeStampInFile, column_names, NumberOfColumns
+        return LengthOfFirstWordInFile, LengthOfSecondWordInFile, column_names, NumberOfColumns
 
 
 
@@ -201,7 +201,7 @@ class Prediction_Data_Validation:
 
 
 
-    def validationFileNameRaw(self, regex, LengthOfDateStampInFile, LengthOfTimeStampInFile):
+    def validationFileNameRaw(self, regex, LengthOfFirstWordInFile, LengthOfSecondWordInFile):
 
         """
         Description: This function validates the name of the prediction csv files as per the given name in schema!
@@ -225,19 +225,19 @@ class Prediction_Data_Validation:
                 if  (re.match(regex, filename)):
                     splitAtDot = re.split('.csv', filename)
                     splitAtDot = (re.split('_', splitAtDot[0]))
-                    if len(splitAtDot[2]) == LengthOfDateStampInFile:
-                        if len(splitAtDot[3]) == LengthOfTimeStampInFile:
+                    if len(splitAtDot[2]) == LengthOfFirstWordInFile:
+                        if len(splitAtDot[3]) == LengthOfSecondWordInFile:
                             shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/Good_Raw")
                             self.logger.log(f, "Valid File Name!! File is moved to GoodRaw folder :: %s" %filename)
                         else:
-                            shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/BadRaw")
+                            shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/Bad_Raw")
                             self.logger.log(f, "Invalid File Name!! File is moved to BadRaw folder :: %s" %filename)
 
                     else:
-                        shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/BadRaw")
+                        shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/Bad_Raw")
                         self.logger.log(f, "Invalid File Name!! File is moved to BadRaw folder :: %s" %filename)
                 else:
-                    shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/BadRaw")
+                    shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/Bad_Raw")
                     self.logger.log(f, "Invalid File Name!! File is moved to BadRaw folder :: %s" %filename)  
             f.close()    
 
