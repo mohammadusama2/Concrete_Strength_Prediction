@@ -1,7 +1,7 @@
 {
     "SampleFileName": "Concrete_Data.csv",
-    "LengthOfDateStampInFile": 8,
-    "LengthOfTimeStampInFile": 6,
+    "LengthOfFirstWordinFile": 8,
+    "LengthOfSecondWordInFile": 4,
     "NumberOfColumns" : 9,
     "ColName" : {
         "Cement (component 1)(kg in a m^3 mixture)" :"float",
