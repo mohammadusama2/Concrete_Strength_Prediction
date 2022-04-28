@@ -7,8 +7,8 @@ from Application_Logging.logger import App_Logger
 class dataTransform:
 
     """
-    We don't need any Data Transformation in this project during Training as we haven't found
-    any requirement to do so.
+        This class shall be used for transformaing the Good Raw Training Data before loading it in database
+
     """
 
 
@@ -51,9 +51,9 @@ class dataTransform:
 """
     def replaceMissingWithNull(self):
 
-        """
+        '
         As there are no missing values we have found in any of the columns during EDA
         so we don't need this function to be used in this project.
-        """
-        pass 
+        '
+         
     """

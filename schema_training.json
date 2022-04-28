@@ -1,5 +1,5 @@
 {
-    "SampleFileName": "Concrete_Data_220422022_203500.csv",
+    "SampleFileName": "Concrete_Data.csv",
     "LengthOfDateStampInFile": 8,
     "LengthOfTimeStampInFile": 6,
     "NumberOfColumns" : 9,

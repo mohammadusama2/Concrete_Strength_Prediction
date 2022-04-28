@@ -44,7 +44,7 @@ class DBOperation:
 
         except ConnectionError:
             file = open('Training_Logs/DataBaseConnection.txt', 'a+')
-            self.logger.log(file, "Error while connecting to Database:: %s" ConnectionError)
+            self.logger.log(file, "Error while connecting to Database:: %s" % ConnectionError)
             file.close()
             raise ConnectionError
 
@@ -92,9 +92,9 @@ class DBOperation:
         goodFilePath= self.goodFilePath
         badFilePath= self.badFilePath
         onlyfiles = [f for f in listdir(goodFilePath)]
-        file = open()
+        file = open("Training_Logs/DbTableCreateLog.txt", 'a+')
 
-        for file in onlyfiles:
+        for f in onlyfiles:
             df = pd.read_excel(file)
             cols =[i[1] for i in enumerate(df)]
             try:
@@ -112,6 +112,7 @@ class DBOperation:
                 self.logger.log(file, "Error occured while creating Table Good_Raw_Data: %s" %e)
                 file.close()
                 session.close()
+                file = open("Prediction_Logs/DatabaseConnectionLog.txt", 'a+')
                 self.logger.log(file, "%s Database disconnected successfully!!" % DatabaseName)
                 file.close()
                 raise e

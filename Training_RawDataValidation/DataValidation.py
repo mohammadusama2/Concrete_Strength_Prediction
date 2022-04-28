@@ -1,5 +1,4 @@
 from datetime import datetime
-from tkinter import E
 import pandas as pd
 import os
 from os import listdir
@@ -7,6 +6,8 @@ import re
 import json
 import shutil
 from Application_Logging.logger import App_Logger
+
+
 
 class Raw_Data_Validation:
 
@@ -74,7 +75,7 @@ class Raw_Data_Validation:
 
         """
 
-        regex = "['Concrete_Data']+['\_']+['\d_']+['\d']+\.csv"
+        regex = "['Concrete']+['\_']+['Data']+\.csv"
         return regex
 
 
@@ -89,10 +90,10 @@ class Raw_Data_Validation:
         """
 
         try:
-            path = os.path.join("Traning_Raw_Files_Validated/", "Good_Raw/")
+            path = os.path.join("Training_Raw_Files_Validated/", "Good_Raw/")
             if not os.path.isdir(path):
-                os.mkdirs(path)
-            path = os.path.join("Training_Raw_Files_Validated", "Bad_Raw/")
+                os.makedirs(path)
+            path = os.path.join("Training_Raw_Files_Validated/", "Bad_Raw/")
             if not os.path.isdir(path):
                 os.makedirs(path)
 
@@ -115,7 +116,7 @@ class Raw_Data_Validation:
         """
 
         try:
-            path = "Traning_Raw_Files_Validated/"
+            path = "Training_Raw_Files_Validated/"
             if os.path.isdir(path + 'Good_Raw/'):
                 shutil.rmtree(path + 'Good_Raw/')
                 file = open("Training_Logs/GeneralLog.txt", 'a+')
@@ -142,7 +143,7 @@ class Raw_Data_Validation:
 
 
         try:
-            path="Training_Raw_Files_Validated"
+            path="Training_Raw_Files_Validated/"
             if os.path.isdir(path + 'Bad_Raw/'):
                 shutil.rmtree(path + 'Bad_Raw/')
                 file = open("Training_Logs/General_Log.txt,'a+")
@@ -151,7 +152,7 @@ class Raw_Data_Validation:
 
         except OSError as e:
             file = open("Training_Logs/General_Log.txt", 'a+')
-            self.logger.log(file, "Error while Deleting Directory : %s" %s)
+            self.logger.log(file, "Error while Deleting Directory : %s" %e)
             file.close()
             raise OSError        
 
@@ -176,10 +177,10 @@ class Raw_Data_Validation:
             if os.path.isdir(source):
                 path = "TrainingArchiveBadData"
                 if not os.path.isdir(path):
-                    os.mkdirs(path)
+                    os.makedirs(path)
                 dest = "TrainingArchiveBadData/BadData_" + str(date) + "_" + str(time)
                 if not os.path.isdir(dest):
-                    os.mkdirs(dest)
+                    os.makedirs(dest)
                 files = os.listdir(source)
                 for f in files:
                     if f not in os.listdir(dest):
@@ -194,7 +195,7 @@ class Raw_Data_Validation:
 
         except Exception as e:
             file = open("Training_Logs/GeneralLog.txt", 'a+')
-            self.logger.log(file, "Error while moving bad files to archive:: %s", %e)
+            self.logger.log(file, "Error while moving bad files to archive:: %s" % e)
             file.close()
             raise e
 
@@ -248,7 +249,7 @@ class Raw_Data_Validation:
 
 
 
-    def validateColumnLength(self):
+    def validateColumnLength(self,NumberOfColumns):
 
         """
         Description: This function validates the number of columns in files.
@@ -265,7 +266,7 @@ class Raw_Data_Validation:
             self.logger.log(f, "Column Length Validation Started!!")
             for file in listdir('Training_Raw_Files_Validated/Good_Raw'):
                 csv = pd.read_csv("Training_Raw_Files_Validated/Good_Raw/" + file)
-                if csv.shape[1] == NumberofColumns: 
+                if csv.shape[1] == NumberOfColumns: 
                     pass
                 else:
                     shutil.move("Training_Raw_files_validated/Good_Raw/" + file, "Training_Raw_files_validated/Bad_Raw")
@@ -285,7 +286,7 @@ class Raw_Data_Validation:
 
 
 
-    def validateMissingValluesinWholeColumn(self):
+    def validateMissingValuesinWholeColumn(self):
 
 
         try:
@@ -293,7 +294,7 @@ class Raw_Data_Validation:
             self.logger.log(f,"Missing Values Validation Started!!")
 
             for file in listdir("Training_Raw_Files_Validated/Good_Raw/"):
-                csv = pd.read_csv("raining_Raw_Files_Validated/Good_Raw/" + file)
+                csv = pd.read_csv("Training_Raw_Files_Validated/Good_Raw/" + file)
                 for columns in csv:
                     if(len(csv[columns]) - csv[columns].count()) == len(csv[columns]):
                         shutil.move("Training_Raw_Files_Validated/Good_Raw" + file,

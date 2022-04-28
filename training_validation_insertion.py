@@ -17,29 +17,27 @@ class train_validation:
         try:
             self.log_writer.log(self.file_object, " Start of validation of files for prediction!!")
             # extracting values from prediction schema
-            LengthOfDateStampInFile, LengthOfTimeStampInFile, column_names, noofcolumns = self.raw_data.valuesFromSchema()
+            LengthOfDateStampInFile, LengthOfTimeStampInFile, column_names, NumberOfColumns = self.raw_data.valuesFromSchema()
             # getting the regex defined to validate filename
             regex = self.raw_data.manualRegexCreation()
             # validating filename of prediction files
             self.raw_data.validationFileNameRaw(regex, LengthOfDateStampInFile, LengthOfTimeStampInFile)
             # validating column length in the file
-            self.raw_data.validateColumnLength(noofcolumns)
+            self.raw_data.validateColumnLength(NumberOfColumns)
             # validating if any column has all values missing
-            self.raw_data.validateMissingValuesInWholeColumn()
+            self.raw_data.validateMissingValuesinWholeColumn()
             self.log_writer.log(self.file_object, "Raw Data Validation Complete!!")
 
-            self.log_writer.log(self.file_object,
-                                "Raw Data Transformation Started!!!")
+            self.log_writer.log(self.file_object,"Raw Data Transformation Started!!!")
             # create database with given name, if present open the connection! Create table with columns given in schema
-            self.dataTransform.renameColumns('Training', column_names)
+            self.dataTransform.renameColumns()
             self.log_writer.log(self.file_object, "Raw Data Transformation Completed!!")
 
 
 
 
 
-            self.log_writer.log(self.file_object,
-                                "Creating Training_Database and tables on the basis of given schema!!!")
+            self.log_writer.log(self.file_object, "Creating Training_Database and tables on the basis of given schema!")
             # create database with given name, if present open the connection! Create table with columns given in schema
             self.DBOperation.createTableDB('Training')
             self.log_writer.log(self.file_object, "Table creation Completed!!")

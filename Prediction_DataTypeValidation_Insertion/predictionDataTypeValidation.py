@@ -1,0 +1,208 @@
+from datetime import datetime
+import cassandra
+from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
+from cassandracsv import CassandraCsv
+import xlrd
+import pandas as pd
+import shutil
+import os
+from os import listdir
+import csv
+from Application_Logging.logger import App_Logger
+
+
+class DBOperation:
+    """
+    This class shall be used for handling all the Cassandra Operations.
+    """
+
+    def __init__(self):
+        self.badFilePath = "Prediction_Raw_Files_Validated/Bad_Raw"
+        self.goodFilePath = "Prediction_Raw_Files_Validated/Good_Raw"
+        self.logger = App_Logger()
+
+
+
+    def dataBaseConnection(self):
+
+        """
+        Description: This function will make the connection to Cassandra Database.
+        Output: Connection to DB
+        On Failure: Raise ConnectionError
+        """
+
+        try:
+            cloud_config= {'secure_connect_bundle': './secure-connect-cementproject.zip'}
+            auth_provider = PlainTextAuthProvider('PkZTuCZLcBOKnGfZeZXdSBks', 'dEsUvnq6-cqJZC0baIZTXJGUft_He2nmYXibeojm.htYhp0Zgiyi2INSIe08zZyXqouRC-Av0kMCUGMM5ZwDmnIHRziX0gMkR-b7svBPt,HOl3M2h9BKI3ZQ4McrACLq')
+            cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+            session = cluster.connect()
+
+            file = open('Prediction_Logs/DataBaseConnectionLog.txt', 'a+')
+            self.logger.log(file, "Database is connected")
+            file.close()
+
+        except ConnectionError:
+            file = open('Prediction_Logs/DataBaseConnection.txt', 'a+')
+            self.logger.log(file, "Error while connecting to Database:: %s" % ConnectionError)
+            file.close()
+            raise ConnectionError
+
+        return session    
+
+
+
+    def createDB(self, DatabaseName):
+
+        """
+        Description: This method creates the database with the given name and if the database already exists then opens the connection to Database. 
+        Output: None
+        On Failure: Raise Exception
+        """
+        
+
+        try:
+            session = self.dataBaseConnection()
+            #session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class':'SimpleStrategy', 'replication_factor':'1'} AND durable_writes='true';" % DatabaseName).one()
+            session.execute("USE %s;" % DatabaseName)
+
+            file = open("Prediction_Logs/DatabaseInUseLog.txt", 'a+')
+            self.logger.log(file, "Selected database %s successfully" % DatabaseName)
+            file.close()
+
+        except Exception as e:
+            file = open("Prediction_Logs/DatabaseInUseLog.txt", 'a+')
+            self.logger.log(file, "Error occured while selecting database: %s" %e)
+            file.close()
+            session.close()
+            self.logger.log(file, "Database disconnected successfully!!")
+            file.close()
+            raise e
+
+
+    def createTableDB(self, DatabaseName):
+
+        """
+        Description: This method creates the table in the given DB which will be used to insert the Good data after raw data validation. 
+        Output: None
+        On Failure: Raise Exception
+        """  
+        
+        session = self.dataBaseConnection()
+        session.execute('DROP TABLE IF EXISTS Good_Raw_Data;')
+        goodFilePath= self.goodFilePath
+        badFilePath= self.badFilePath
+        onlyfiles = [f for f in listdir(goodFilePath)]
+        file = open()
+
+        for file in onlyfiles:
+            df = pd.read_excel(file)
+            cols =[i[1] for i in enumerate(df)]
+            try:
+                session = self.createDB(DatabaseName)
+                query = f"""CREATE TABLE Good_Raw_Data(id int  PRIMARY KEY, "{cols[0]}" float,"{cols[1]}" float,"{cols[2]}" float,"{cols[3]}" float,
+                        "{cols[4]}" float,"{cols[5]}" float,"{cols[6]}" float,"{cols[7]}" float,"{cols[8]}" float);"""
+                session.execute(query)
+
+                file = open("Prediction_Logs/DBTableCreateLog.txt", 'a+')
+                self.logger.log(file, "Table Good_Raw_Data created successfully")
+                file.close()
+
+            except Exception as e:
+                file = open("Prediction_Logs/TableDBCreateLog.txt", 'a+')
+                self.logger.log(file, "Error occured while creating Table Good_Raw_Data: %s" %e)
+                file.close()
+                session.close()
+                file = open("Prediction_Logs/DatabaseConnectionLog.txt", 'a+')
+                self.logger.log(file, "%s Database disconnected successfully!!" % DatabaseName)
+                file.close()
+                raise e
+
+
+
+    def insertIntoTableGoodData(self, DatabaseName):
+
+        """
+        Description: This method inserts the Good data files from the Good_Raw folder into the
+                     table of Database. 
+        Output: None
+        On Failure: Raise Exception
+        """
+
+
+        session = self.dataBaseConnection(DatabaseName)
+        goodFilePath= self.goodFilePath
+        badFilePath= self.badFilePath
+        onlyfiles = [f for f in listdir(goodFilePath)]
+        log_file = open("Prediction_Logs/DbInsertLog.txt", 'a+')
+
+        for file in onlyfiles:
+            
+            try:
+                df = pd.read_excel(file)
+                cols =[i[1] for i in enumerate(df)]
+                list_ = df.values.tolist()
+                values = [i for i in list_]
+                for i in range(len(values)):
+                    try:
+                        query=f"""INSERT INTO Good_Raw_Data(id,"{cols[0]}","{cols[1]}","{cols[2]}","{cols[3]}","{cols[4]}","{cols[5]}","{cols[6]}","{cols[7]}","{cols[8]}") VALUES({i},{values[i][0]},{values[i][1]},{values[i][2]},{values[i][3]},{values[i][4]},{values[i][5]},{values[i][6]},{values[i][7]},{values[i][8]});"""
+                        session.execute(query)
+                        self.logger.log(log_file, "%s: Data inserted into table successfully!!" % file)
+                    except Exception as e:
+                        raise e
+
+            except Exception as e:
+
+                self.logger.log(log_file, "Error while inserting data into table: %s" %e)
+                shutil.move(goodFilePath + '/' + file, badFilePath)
+                self.logger.log(log_file,"File Move Successfully %s" % file)
+                log_file.close()
+                session.close()  
+
+        session.close()
+        log_file.close()                      
+
+        
+
+
+    def selectingDatafromtableintocsv(self,DatabaseName):
+
+
+        """
+        Description: This method exports the data from table of Database to csv file in a given location. 
+        Output: None
+        On Failure: Raise Exception
+        """
+
+
+        self.fileFromDb = 'Prediction_FileFromDB/'
+        self.fileName = 'InputFile.csv'
+        log_file = open("Prediction_Logs/ExportToCsv.txt",'a+')
+
+        try:
+            session = self.dataBaseConnection(DatabaseName)
+            query = "SELECT * FROM Good_Raw_Data;"
+            result = session.execute(query)
+
+            #Make the CSV ouput directory
+            if not os.path.isdir(self.fileFromDb):
+                os.makedirs(self.fileFromDb)
+                
+                
+            #Exporting to csv file from Database    
+            CassandraCsv.export(result, output_dir=self.fileFromDb, filename=self.fileName)
+
+            #Sorting rows and columns and exporting to csv file
+            sortfile = pd.read_csv(self.fileFromDb + self.fileName)
+            sortfile = sortfile.sort_values(['Id']).drop('Id',axis=1)
+            sortfile = sortfile[['Cement', 'Blast', 'Fly', 'Water', 'Superplasticizer', 'Coarse', 'Fine','Age', 'Concrete']]
+            sortfile.to_csv(self.fileFromDb + self.fileName, index=False)
+
+            self.logger.log(log_file, "File exported successfully!!!")
+            log_file.close()
+
+        except Exception as e:
+            self.logger.log(log_file, " File export failed. Error: %s" % e)
+            log_file.close()    
+
+
