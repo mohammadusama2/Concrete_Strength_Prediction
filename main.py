@@ -18,12 +18,10 @@ dashboard.bind(app)
 CORS(app)
 
 @app.route('/', methods=['GET'])
-@cross_origin()
 def home():
     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
-@cross_origin()
 def predictRouteClient():
     try:
         if request.json is not None:
@@ -63,7 +61,6 @@ def predictRouteClient():
 
 
 @app.route('/train', methods=['GET','POST'])
-@cross_origin()
 def trainRouteClient():
 
     try:
@@ -93,8 +90,8 @@ def trainRouteClient():
 port = int(os.getenv("PORT", 1234))
 if __name__ == '__main__':
     host = '0.0.0.0'
-
     httpd = simple_server.make_server(host, port, app)
+    print("Serving on %s %d" % ( host,port))
     httpd.serve_forever()
 
 

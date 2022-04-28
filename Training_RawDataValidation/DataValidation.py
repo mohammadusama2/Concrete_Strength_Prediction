@@ -35,7 +35,8 @@ class Raw_Data_Validation:
             LengthOfFirstWordInFile = dic['LengthOfFirstWordInFile']
             LengthOfSecondWordInFile = dic['LengthOfSecondWordInFile']
             column_names = dic['ColName']
-            NumberOfColumns = dic['NumberOfColumns']
+            NumberOfColumns = dic['NumberOfColumns'] 
+
 
             file = open("Training_Logs/valuesfromSchemaValidationLog.txt", 'a+')
             message = "LengthOfFirstWordInFile:: %s" %LengthOfFirstWordInFile + "\t" + "LengthOfSecondWordInFile:: %s" %LengthOfSecondWordInFile + "\t" + "NumberofColumns:: %s" %NumberOfColumns + "\n"
