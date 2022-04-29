@@ -5,6 +5,8 @@ from os import listdir
 import re
 import json
 import shutil
+import xlrd
+import xlwt
 from Application_Logging.logger import App_Logger
 
 
@@ -36,6 +38,7 @@ class Prediction_Data_Validation:
             LengthOfSecondWordInFile = dic['LengthOfSecondWordInFile']
             column_names = dic['ColName']
             NumberOfColumns = dic['NumberOfColumns']
+
 
             file = open("Prediction_Logs/valuesfromSchemaValidationLog.txt", 'a+')
             message = "LengthOfFirstWordInFile:: %s" %LengthOfFirstWordInFile + "\t" + "LengthOfSecondWordInFile:: %s" %LengthOfSecondWordInFile + "\t" + "NumberofColumns:: %s" %NumberOfColumns + "\n"
@@ -75,7 +78,7 @@ class Prediction_Data_Validation:
 
         """
 
-        regex = "['Concrete']+['\_']+['Data']+\.csv"
+        regex = "['Concrete']+['\_']+['Data']+\.xls"
         return regex
 
 
@@ -171,7 +174,7 @@ class Prediction_Data_Validation:
 
         now =datetime.now()
         date = now.date()
-        time = now.strftime("%H:%M:%S")
+        time = now.strftime("%H%M%S")
         try:
             source = 'Prediction_Raw_Files_Validated/Bad_Raw/'
             if os.path.isdir(source):
@@ -223,10 +226,10 @@ class Prediction_Data_Validation:
             f = open("Prediction_Logs/nameValdationLog.txt", 'a+')
             for filename in onlyfiles:
                 if  (re.match(regex, filename)):
-                    splitAtDot = re.split('.csv', filename)
+                    splitAtDot = re.split('.xls', filename)
                     splitAtDot = (re.split('_', splitAtDot[0]))
-                    if len(splitAtDot[2]) == LengthOfFirstWordInFile:
-                        if len(splitAtDot[3]) == LengthOfSecondWordInFile:
+                    if len(splitAtDot[0]) == LengthOfFirstWordInFile:
+                        if len(splitAtDot[1]) == LengthOfSecondWordInFile:
                             shutil.copy("Prediction_Batch_Files/" + filename, "Prediction_Raw_Files_Validated/Good_Raw")
                             self.logger.log(f, "Valid File Name!! File is moved to GoodRaw folder :: %s" %filename)
                         else:
@@ -265,8 +268,8 @@ class Prediction_Data_Validation:
             f = open("Prediction_Logs/columnValidationLog.txt", 'a+')
             self.logger.log(f, "Column Length Validation Started!!")
             for file in listdir('Prediction_Raw_Files_Validated/Good_Raw'):
-                csv = pd.read_csv("Prediction_Raw_Files_Validated/Good_Raw/" + file)
-                if csv.shape[1] == NumberOfColumns: 
+                xls = pd.read_excel("Prediction_Raw_Files_Validated/Good_Raw/" + file)
+                if xls.shape[1] == NumberOfColumns: 
                     pass
                 else:
                     shutil.move("Prediction_Raw_Files_Validated/Good_Raw/" + file, "Prediction_Raw_Files_Validated/Bad_Raw")
@@ -294,9 +297,9 @@ class Prediction_Data_Validation:
             self.logger.log(f,"Missing Values Validation Started!!")
 
             for file in listdir("Prediction_Raw_Files_Validated/Good_Raw/"):
-                csv = pd.read_csv("Prediction_Raw_Files_Validated/Good_Raw/" + file)
-                for columns in csv:
-                    if(len(csv[columns]) - csv[columns].count()) == len(csv[columns]):
+                xls = pd.read_excel("Prediction_Raw_Files_Validated/Good_Raw/" + file)
+                for columns in xls:
+                    if(len(xls[columns]) - xls[columns].count()) == len(xls[columns]):
                         shutil.move("Prediction_Raw_Files_Validated/Good_Raw" + file,
                                     "Prediction_Raw_Files_Validated/Bad_Raw")
                         self.logger.log(f, "Invalid Column Length for the file!! File moved to Bad Raw folder :: %s" %file) 
