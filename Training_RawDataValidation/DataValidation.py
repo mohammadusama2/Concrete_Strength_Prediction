@@ -76,7 +76,7 @@ class Raw_Data_Validation:
 
         """
 
-        regex = "['Concrete']+['\_']+['Data']+\.csv"
+        regex = "['Concrete']+['\_']+['Data']+\.xls"
         return regex
 
 
@@ -147,12 +147,12 @@ class Raw_Data_Validation:
             path="Training_Raw_Files_Validated/"
             if os.path.isdir(path + 'Bad_Raw/'):
                 shutil.rmtree(path + 'Bad_Raw/')
-                file = open("Training_Logs/General_Log.txt,'a+")
+                file = open("Training_Logs/GeneralLog.txt,'a+")
                 self.logger.log(file, "BadRaw Directory Deleted Successfully!!!")
                 file.close()
 
         except OSError as e:
-            file = open("Training_Logs/General_Log.txt", 'a+')
+            file = open("Training_Logs/GeneralLog.txt", 'a+')
             self.logger.log(file, "Error while Deleting Directory : %s" %e)
             file.close()
             raise OSError        
@@ -172,7 +172,7 @@ class Raw_Data_Validation:
 
         now =datetime.now()
         date = now.date()
-        time = now.strftime("%H:%M:%S")
+        time = now.strftime("%H%M%S")
         try:
             source = 'Training_Raw_Files_Validated/Bad_Raw/'
             if os.path.isdir(source):
@@ -219,7 +219,7 @@ class Raw_Data_Validation:
 
         #Create new directories for good and bad data
         self.createDirectoryforGoodBadRawData()
-        onlyfiles = [f for f in os.listdir(self.Batch_Directory)]
+        onlyfiles = [f for f in listdir(self.Batch_Directory)]
         try:
             f = open("Training_Logs/nameValdationLog.txt", 'a+')
             for filename in onlyfiles:

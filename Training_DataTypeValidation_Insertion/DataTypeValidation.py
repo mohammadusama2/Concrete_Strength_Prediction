@@ -52,7 +52,7 @@ class DBOperation:
 
 
 
-    def createDB(self, DatabaseName):
+    def useDB(self, DatabaseName):
 
         """
         Description: This method creates the database with the given name and if the database already exists then opens the connection to Database. 
@@ -74,7 +74,6 @@ class DBOperation:
             file = open("Training_Logs/DatabaseInUseLog.txt", 'a+')
             self.logger.log(file, "Error occured while selecting database: %s" %e)
             file.close()
-            session.close()
             self.logger.log(file, "Database disconnected successfully!!")
             file.close()
             raise e
@@ -98,7 +97,7 @@ class DBOperation:
             df = pd.read_excel(file)
             cols =[i[1] for i in enumerate(df)]
             try:
-                session = self.createDB(DatabaseName)
+                self.useDB(DatabaseName)
                 query = f"""CREATE TABLE Good_Raw_Data(id int  PRIMARY KEY, "{cols[0]}" float,"{cols[1]}" float,"{cols[2]}" float,"{cols[3]}" float,
                         "{cols[4]}" float,"{cols[5]}" float,"{cols[6]}" float,"{cols[7]}" float,"{cols[8]}" float);"""
                 session.execute(query)
@@ -111,7 +110,6 @@ class DBOperation:
                 file = open("Training_Logs/TableDBCreateLog.txt", 'a+')
                 self.logger.log(file, "Error occured while creating Table Good_Raw_Data: %s" %e)
                 file.close()
-                session.close()
                 file = open("Prediction_Logs/DatabaseConnectionLog.txt", 'a+')
                 self.logger.log(file, "%s Database disconnected successfully!!" % DatabaseName)
                 file.close()
@@ -129,7 +127,7 @@ class DBOperation:
         """
 
 
-        session = self.dataBaseConnection(DatabaseName)
+        session = self.dataBaseConnection()
         goodFilePath= self.goodFilePath
         badFilePath= self.badFilePath
         onlyfiles = [f for f in listdir(goodFilePath)]
@@ -138,6 +136,7 @@ class DBOperation:
         for file in onlyfiles:
             
             try:
+                self.useDB(DatabaseName)
                 df = pd.read_excel(file)
                 cols =[i[1] for i in enumerate(df)]
                 list_ = df.values.tolist()
@@ -155,10 +154,8 @@ class DBOperation:
                 self.logger.log(log_file, "Error while inserting data into table: %s" %e)
                 shutil.move(goodFilePath + '/' + file, badFilePath)
                 self.logger.log(log_file,"File Move Successfully %s" % file)
-                log_file.close()
-                session.close()  
+                log_file.close()  
 
-        session.close()
         log_file.close()                      
 
         
@@ -179,7 +176,9 @@ class DBOperation:
         log_file = open("Training_Logs/ExportToCsv.txt",'a+')
 
         try:
-            session = self.dataBaseConnection(DatabaseName)
+            session = self.dataBaseConnection()
+            self.useDB(DatabaseName)
+
             query = "SELECT * FROM Good_Raw_Data;"
             result = session.execute(query)
 
