@@ -19,7 +19,7 @@ class trainModel:
 
     def trainingModel(self):
 
-        self.log_writer.log(Self.file_object, 'Start of Training')
+        self.log_writer.log(self.file_object, 'Start of Training')
         try:
             #Getting Data from the source
             data_getter = data_loader.Data_Getter(self.file_object, self.log_writer)
@@ -32,15 +32,15 @@ class trainModel:
             data = preprocessor.removeDuplicates(data)
 
             #Seperating Features and Label
-            X,Y = preprocessor.separate_label_feature(data,label_column_name = 'concrete')
+            X,Y = preprocessor.separate_label_feature(data,label_column_name = 'Concrete')
 
             "#CLUSTERING STEPS:"
             kmeans=clustering.KMeansClustering(self.file_object,self.log_writer)
             number_of_clusters = kmeans.elbow_plot(X)
-            X=kmeans.create_clusters(X,number_of_clusters=number_of_clusters)
+            X=kmeans.create_clusters(X,number_of_clusters)
 
             #create a column in the dataset consisting of coresponding cluster assignments
-            x['Labels'] = Y
+            X['Labels'] = Y
 
             #getting unique clusters from our dataset
             list_of_clusters = X['Cluster'].unique()

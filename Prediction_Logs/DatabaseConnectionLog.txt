@@ -1,0 +1,7 @@
+2022-04-29/21:23,54		training Database disconnected successfully!!
+2022-04-29/21:47,44		training Database disconnected successfully!!
+2022-04-29/23:13,00		training Database disconnected successfully!!
+2022-04-29/23:54,12		training Database disconnected successfully!!
+2022-04-30/00:26,46		training Database disconnected successfully!!
+2022-04-30/00:49,54		training Database disconnected successfully!!
+2022-04-30/01:01,22		training Database disconnected successfully!!

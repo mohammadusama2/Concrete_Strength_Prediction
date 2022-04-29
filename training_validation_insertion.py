@@ -22,7 +22,7 @@ class train_validation:
             regex = self.raw_data.manualRegexCreation()
             # validating filename of prediction files
             self.raw_data.validationFileNameRaw(regex, LengthOfDateStampInFile, LengthOfTimeStampInFile)
-            # validating column length in the file
+            # validating `column `length in the file
             self.raw_data.validateColumnLength(NumberOfColumns)
             # validating if any column has all values missing
             self.raw_data.validateMissingValuesinWholeColumn()
@@ -39,11 +39,11 @@ class train_validation:
 
             self.log_writer.log(self.file_object, "Creating Training_Database and tables on the basis of given schema!")
             # create database with given name, if present open the connection! Create table with columns given in schema
-            self.DBOperation.createTableDB('Training')
+            self.DBOperation.createTableDB('training')
             self.log_writer.log(self.file_object, "Table creation Completed!!")
             self.log_writer.log(self.file_object, "Insertion of Data into Table started!!!!")
             # insert csv files in the table
-            self.DBOperation.insertIntoTableGoodData('Training')
+            self.DBOperation.insertIntoTableGoodData('training')
             self.log_writer.log(self.file_object, "Insertion in Table completed!!!")
             self.log_writer.log(self.file_object, "Deleting Good Data Folder!!!")
             # Delete the good data folder after loading files in table
@@ -56,7 +56,8 @@ class train_validation:
             self.log_writer.log(self.file_object, "Validation Operation completed!!")
             self.log_writer.log(self.file_object, "Extracting csv file from table")
             # export data in table to csvfile
-            self.DBOperation.selectingDatafromtableintocsv('Training')
+            self.DBOperation.selectingDatafromtableintocsv('training')
+            self.log_writer.log(self.file_object, "Extraction of table data to csv file is finished. ")
             self.file_object.close()
 
         except Exception as e:

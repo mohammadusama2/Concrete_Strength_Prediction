@@ -1,8 +1,10 @@
-from cmath import log
 from datetime import datetime
 from os import listdir
 import pandas as pd
+import xlrd
+import xlwt
 from Application_Logging.logger import App_Logger
+
 
 class dataTransform:
 
@@ -14,7 +16,7 @@ class dataTransform:
 
 
     def __init__ (self):
-        self.goodDataPAth = "Training_Raw_Files_Validated/Good_Raw"
+        self.goodDataPath = "Training_Raw_Files_Validated/Good_Raw"
         self.logger = App_Logger()
 
 
@@ -31,9 +33,9 @@ class dataTransform:
         log_file = open("Training_Logs/renameColumns.txt", 'a+')
         
         try:
-            onlyfiles = [f for f in listdir(self.goodDataPAth)]
+            onlyfiles = [f for f in listdir(self.goodDataPath)]
             for file in onlyfiles:
-                data = pd.read_csv(self.goodDataPath+"/" + file)
+                data = pd.read_excel(self.goodDataPath+"/" + file)
                 data=data.rename(columns= lambda x: x.split(" ")[0])
 
                 data.to_excel(self.goodDataPath+"/" + file, index=False, header=True)

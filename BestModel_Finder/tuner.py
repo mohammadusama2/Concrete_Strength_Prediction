@@ -74,7 +74,7 @@ class Model_Finder:
 
 
 
-    def get_best_params_for_bagging_decision_tree(train_x,train_y,test_x,test_y):
+    def get_best_params_for_bagging_decision_tree(self,train_x,train_y,test_x,test_y):
         
     
 
@@ -118,7 +118,7 @@ class Model_Finder:
 
 
 
-    def get_best_params_for_xgboost(train_x,train_y,test_x,test_y):
+    def get_best_params_for_xgboost(self,train_x,train_y,test_x,test_y):
         
     
 
@@ -173,7 +173,7 @@ class Model_Finder:
 
 
 
-    def get_best_params_for_svr(train_x,train_y,test_x,test_y):
+    def get_best_params_for_svr(self,train_x,train_y,test_x,test_y):
         
     
 
@@ -228,26 +228,26 @@ class Model_Finder:
         try:
 
             #create best model for Reandom Forest Regressor
-            randomForestReg = self.get_best_params_for_random_forest(self,train_x,train_y,test_x,test_y)
+            randomForestReg = self.get_best_params_for_random_forest(train_x,train_y,test_x,test_y)
             prediction_randomForestReg = randomForestReg.predict(test_x)
             prediction_randomForestReg_error = r2_score(test_y, prediction_randomForestReg)
 
 
 
             #create best model for Bagging Regressor : Decision Tree 
-            baggingDecisionTreeReg = self.get_best_params_for_bagging_decision_tree(self,train_x,train_y,test_x,test_y)
+            baggingDecisionTreeReg = self.get_best_params_for_bagging_decision_tree(train_x,train_y,test_x,test_y)
             prediction_baggingDecisionTreeReg = baggingDecisionTreeReg.predict(test_x)
             prediction_baggingDecisionTreeReg_error = r2_score(test_y, prediction_baggingDecisionTreeReg)
 
 
             #create best model for XG Boost Regressor
-            XGBoostReg = self.get_best_params_for_xgboost(self,train_x,train_y,test_x,test_y)
+            XGBoostReg = self.get_best_params_for_xgboost(train_x,train_y,test_x,test_y)
             prediction_XGBoostReg = XGBoostReg.predict(test_x)
             prediction_XGBoostReg_error = r2_score(test_y, prediction_XGBoostReg)
 
 
             #create best model for SVM Regressor
-            SVRReg = self.get_best_params_for_random_forest(self,train_x,train_y,test_x,test_y)
+            SVRReg = self.get_best_params_for_random_forest(train_x,train_y,test_x,test_y)
             prediction_SVRReg = SVRReg.predict(test_x)
             prediction_SVRReg_error = r2_score(test_y, prediction_SVRReg)
 

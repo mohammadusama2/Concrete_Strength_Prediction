@@ -4,6 +4,7 @@ from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from cassandracsv import CassandraCsv
 import xlrd
+import xlwt
 import pandas as pd
 import shutil
 import os
@@ -21,6 +22,7 @@ class DBOperation:
         self.badFilePath = "Training_Raw_Files_Validated/Bad_Raw"
         self.goodFilePath = "Training_Raw_Files_Validated/Good_Raw"
         self.logger = App_Logger()
+        self.DatabaseName = 'training'
 
 
 
@@ -52,32 +54,6 @@ class DBOperation:
 
 
 
-    def useDB(self, DatabaseName):
-
-        """
-        Description: This method creates the database with the given name and if the database already exists then opens the connection to Database. 
-        Output: None
-        On Failure: Raise Exception
-        """
-        
-
-        try:
-            session = self.dataBaseConnection()
-            #session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class':'SimpleStrategy', 'replication_factor':'1'} AND durable_writes='true';" % DatabaseName).one()
-            session.execute("USE %s;" % DatabaseName)
-
-            file = open("Training_Logs/DatabaseInUseLog.txt", 'a+')
-            self.logger.log(file, "Selected database %s successfully" % DatabaseName)
-            file.close()
-
-        except Exception as e:
-            file = open("Training_Logs/DatabaseInUseLog.txt", 'a+')
-            self.logger.log(file, "Error occured while selecting database: %s" %e)
-            file.close()
-            self.logger.log(file, "Database disconnected successfully!!")
-            file.close()
-            raise e
-
 
     def createTableDB(self, DatabaseName):
 
@@ -88,36 +64,38 @@ class DBOperation:
         """  
         
         session = self.dataBaseConnection()
+        session.execute("USE %s;" % DatabaseName)
         goodFilePath= self.goodFilePath
-        badFilePath= self.badFilePath
         onlyfiles = [f for f in listdir(goodFilePath)]
-        file = open("Training_Logs/DbTableCreateLog.txt", 'a+')
+        log_file = open("Training_Logs/DbTableCreateLog.txt", 'a+')
 
-        for f in onlyfiles:
-            df = pd.read_excel(file)
+        for file in onlyfiles:
+            df = pd.read_excel(goodFilePath+'/' + file)
             cols =[i[1] for i in enumerate(df)]
             try:
-                self.useDB(DatabaseName)
-                query = f"""CREATE TABLE Good_Raw_Data(id int  PRIMARY KEY, "{cols[0]}" float,"{cols[1]}" float,"{cols[2]}" float,"{cols[3]}" float,
+                query = 'DROP TABLE IF EXISTS Good_Raw_Data;'
+                session.execute(query)
+
+                query = f"""CREATE TABLE IF NOT EXISTS Good_Raw_Data(id int  PRIMARY KEY, "{cols[0]}" float,"{cols[1]}" float,"{cols[2]}" float,"{cols[3]}" float,
                         "{cols[4]}" float,"{cols[5]}" float,"{cols[6]}" float,"{cols[7]}" float,"{cols[8]}" float);"""
                 session.execute(query)
 
-                file = open("Training_Logs/DBTableCreateLog.txt", 'a+')
-                self.logger.log(file, "Table Good_Raw_Data created successfully")
-                file.close()
+                log_file = open("Training_Logs/DBTableCreateLog.txt", 'a+')
+                self.logger.log(log_file, "Table Good_Raw_Data created successfully")
+                log_file.close()
 
             except Exception as e:
-                file = open("Training_Logs/TableDBCreateLog.txt", 'a+')
-                self.logger.log(file, "Error occured while creating Table Good_Raw_Data: %s" %e)
-                file.close()
-                file = open("Prediction_Logs/DatabaseConnectionLog.txt", 'a+')
-                self.logger.log(file, "%s Database disconnected successfully!!" % DatabaseName)
-                file.close()
+                log_file = open("Training_Logs/DBTableCreateLog.txt", 'a+')
+                self.logger.log(log_file, "Error occured while creating Table Good_Raw_Data: %s" %e)
+                log_file.close()
+                log_file = open("Prediction_Logs/DatabaseConnectionLog.txt", 'a+')
+                self.logger.log(log_file, "%s Database disconnected successfully!!" % DatabaseName)
+                log_file.close()
                 raise e
 
 
 
-    def insertIntoTableGoodData(self, DatabaseName):
+    def insertIntoTableGoodData(self,DatabaseName):
 
         """
         Description: This method inserts the Good data files from the Good_Raw folder into the
@@ -131,13 +109,13 @@ class DBOperation:
         goodFilePath= self.goodFilePath
         badFilePath= self.badFilePath
         onlyfiles = [f for f in listdir(goodFilePath)]
+        session.execute("USE %s;" % DatabaseName)
         log_file = open("Training_Logs/DbInsertLog.txt", 'a+')
 
         for file in onlyfiles:
             
             try:
-                self.useDB(DatabaseName)
-                df = pd.read_excel(file)
+                df = pd.read_excel(goodFilePath+ '/'+ file)
                 cols =[i[1] for i in enumerate(df)]
                 list_ = df.values.tolist()
                 values = [i for i in list_]
@@ -174,10 +152,10 @@ class DBOperation:
         self.fileFromDb = 'Training_FileFromDB/'
         self.fileName = 'InputFile.csv'
         log_file = open("Training_Logs/ExportToCsv.txt",'a+')
+        session = self.dataBaseConnection()
+        session.execute("USE %s;" % DatabaseName)
 
         try:
-            session = self.dataBaseConnection()
-            self.useDB(DatabaseName)
 
             query = "SELECT * FROM Good_Raw_Data;"
             result = session.execute(query)

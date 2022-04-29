@@ -5,6 +5,8 @@ from os import listdir
 import re
 import json
 import shutil
+import xlrd
+import xlwt
 from Application_Logging.logger import App_Logger
 
 
@@ -126,7 +128,7 @@ class Raw_Data_Validation:
         
         except OSError as s:
             file = open("Training_Logs/GeneralLog.txt", 'a+')
-            self.logger.log(file,"Error while deleteing Directory : %s" %s)
+            self.logger.log(file,"Error while deleting directory : %s" %s)
             file.close()
             raise OSError
 
@@ -153,7 +155,7 @@ class Raw_Data_Validation:
 
         except OSError as e:
             file = open("Training_Logs/GeneralLog.txt", 'a+')
-            self.logger.log(file, "Error while Deleting Directory : %s" %e)
+            self.logger.log(file, "Error while Deleting BadRaw Directory : %s" %e)
             file.close()
             raise OSError        
 
@@ -205,7 +207,7 @@ class Raw_Data_Validation:
     def validationFileNameRaw(self, regex, LengthOfFirstWordInFile, LengthOfSecondWordInFile):
 
         """
-        Description: This function validates the name of the training csv files as per the given name in schema!
+        Description: This function validates the name of the training xls files as per the given name in schema!
                     Regex pattern is used to do the validation.If name format doesn't match, the file is moved 
                     to the Bad Raw data folder else in Good Raw data folder.
         Output: None
@@ -224,7 +226,7 @@ class Raw_Data_Validation:
             f = open("Training_Logs/nameValdationLog.txt", 'a+')
             for filename in onlyfiles:
                 if  (re.match(regex, filename)):
-                    splitAtDot = re.split('.csv', filename)
+                    splitAtDot = re.split('.xls', filename)
                     splitAtDot = (re.split('_', splitAtDot[0]))
                     if len(splitAtDot[0]) == LengthOfFirstWordInFile:
                         if len(splitAtDot[1]) == LengthOfSecondWordInFile:
@@ -232,11 +234,11 @@ class Raw_Data_Validation:
                             self.logger.log(f, "Valid File Name!! File is moved to GoodRaw folder :: %s" %filename)
                         else:
                             shutil.copy("Training_Batch_Files/" + filename, "Training_Raw_Files_Validated/Bad_Raw")
-                            self.logger.log(f, "Invalid File Name!! File is moved to BadRaw folder :: %s" %filename)
+                            self.logger.log(f, "Invalid File Name (second_word) !! File is moved to BadRaw folder :: %s" %filename)
 
                     else:
                         shutil.copy("Training_Batch_Files/" + filename, "Training_Raw_Files_Validated/Bad_Raw")
-                        self.logger.log(f, "Invalid File Name!! File is moved to BadRaw folder :: %s" %filename)
+                        self.logger.log(f, "Invalid File Name (first_word)!! File is moved to BadRaw folder :: %s" %filename)
                 else:
                     shutil.copy("Training_Batch_Files/" + filename, "Training_Raw_Files_Validated/Bad_Raw")
                     self.logger.log(f, "Invalid File Name!! File is moved to BadRaw folder :: %s" %filename)  
@@ -266,8 +268,8 @@ class Raw_Data_Validation:
             f = open("Training_Logs/columnValidationLog.txt", 'a+')
             self.logger.log(f, "Column Length Validation Started!!")
             for file in listdir('Training_Raw_Files_Validated/Good_Raw'):
-                csv = pd.read_csv("Training_Raw_Files_Validated/Good_Raw/" + file)
-                if csv.shape[1] == NumberOfColumns: 
+                xls = pd.read_excel("Training_Raw_Files_Validated/Good_Raw/" + file)
+                if xls.shape[1] == NumberOfColumns: 
                     pass
                 else:
                     shutil.move("Training_Raw_files_validated/Good_Raw/" + file, "Training_Raw_files_validated/Bad_Raw")
@@ -295,9 +297,9 @@ class Raw_Data_Validation:
             self.logger.log(f,"Missing Values Validation Started!!")
 
             for file in listdir("Training_Raw_Files_Validated/Good_Raw/"):
-                csv = pd.read_csv("Training_Raw_Files_Validated/Good_Raw/" + file)
-                for columns in csv:
-                    if(len(csv[columns]) - csv[columns].count()) == len(csv[columns]):
+                xls = pd.read_excel("Training_Raw_Files_Validated/Good_Raw/" + file)
+                for columns in xls:
+                    if(len(xls[columns]) - xls[columns].count()) == len(xls[columns]):
                         shutil.move("Training_Raw_Files_Validated/Good_Raw" + file,
                                     "Training_Raw_Files_Validated/Bad_Raw")
                         self.logger.log(f, "Invalid Column Length for the file!! File moved to Bad Raw folder :: %s" %file) 

@@ -38,6 +38,7 @@ class Preprocessor:
             duplicates =allduplicates.drop(unqval.index)
             #Now let's remove the duplicate rows from main dataframe
             self.useful_data = self.data.drop(duplicates.index)
+            return self.useful_data
 
             self.logger_object.log(self.file_object, "Duplicate Rows removal successful. Exited the removeDuplicates method of Preprocessor class")
 

@@ -24,7 +24,7 @@ class KMeansClustering:
         wcss=[]
         try:
             for i in range (1,11):
-                kmeans = KMeans(n_clusters=i, init='k=-means++', randaom_state=12) #Initializing the KMeansa Object
+                kmeans = KMeans(n_clusters=i, init='k-means++', random_state=12) #Initializing the KMeansa Object
                 kmeans.fit(data) #Fitting will create clusters of data
                 wcss.append(kmeans.inertia_)
             plt.plot(range(1,11),wcss) #Creating the Graph between WCSS and the number of clusters
@@ -35,9 +35,10 @@ class KMeansClustering:
 
             #Finding the value of the optimum number of clusters programmatically
             self.kn = KneeLocator(range(1,11), wcss, curve='convex', direction='decreasing')
-            
+
             self.logger_object.log(self.file_object, 'The optimum numbers of cluster is:  '+ str(self.kn.knee)+ '.')
             self.logger_object.log(self.file_object, 'Exited the elbow_plot method of the KMeansClustering class')
+            return self.kn.knee
 
         except Exception as e:
             self.logger_object.log(self.file_object,'Exception occured in elbow_plot method of the KMeansClustering class. Exception message:  ' + str(e))
@@ -61,7 +62,7 @@ class KMeansClustering:
             self.y_means = self.kmeans.fit_predict(data) #Dividing data into given number of cluster
 
             #Saving KMeans model to the local directory
-            self.file_op = file_methods.File_Oeration(self.file_object, self.logger_object)
+            self.file_op = file_methods.File_Operation(self.file_object, self.logger_object)
             self.save_model = self.file_op.save_model(self.kmeans, 'KMeans') 
 
             self.data['Cluster'] = self.y_means #Create a new column in dataset for storing the cluster information.
