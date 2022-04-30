@@ -20,8 +20,7 @@ class prediction:
 
 
     def predictionFromModel(self):
-
-
+        
         self.log_writer.log(self.file_object, 'Start of Prediction')
         try:
             #Delete existing prediction file
