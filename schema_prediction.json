@@ -1,6 +1,6 @@
 {
-    "SampleFileName": "Concrete_Data.csv",
-    "LengthOfFirstWordinFile": 8,
+    "SampleFileName": "Concrete_Data.xls",
+    "LengthOfFirstWordInFile": 8,
     "LengthOfSecondWordInFile": 4,
     "NumberOfColumns" : 8,
     "ColName" : {

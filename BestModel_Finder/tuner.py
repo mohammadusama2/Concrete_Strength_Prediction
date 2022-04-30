@@ -247,7 +247,7 @@ class Model_Finder:
 
 
             #create best model for SVM Regressor
-            SVRReg = self.get_best_params_for_random_forest(train_x,train_y,test_x,test_y)
+            SVRReg = self.get_best_params_for_svr(train_x,train_y,test_x,test_y)
             prediction_SVRReg = SVRReg.predict(test_x)
             prediction_SVRReg_error = r2_score(test_y, prediction_SVRReg)
 
@@ -256,16 +256,16 @@ class Model_Finder:
             bestmodel = max(prediction_randomForestReg_error,prediction_baggingDecisionTreeReg_error,prediction_XGBoostReg_error,prediction_SVRReg_error)
 
             if bestmodel == prediction_randomForestReg_error:
-                return 'RandomForestRegressor', prediction_randomForestReg_error
+                return 'RandomForestRegressor', randomForestReg
 
             elif bestmodel == prediction_baggingDecisionTreeReg_error:
-                return 'BaggingDecisionTreeRegressor', prediction_baggingDecisionTreeReg_error
+                return 'BaggingDecisionTreeRegressor', baggingDecisionTreeReg
 
             elif bestmodel == prediction_XGBoostReg_error:
-                return 'XGBoostRegressor', prediction_XGBoostReg_error
+                return 'XGBoostRegressor', XGBoostReg
 
             else:
-                return 'SVMRegressor', prediction_SVRReg_error
+                return 'SVMRegressor', SVRReg
 
         except Exception as e:
             self.logger_object.log(self.file_object,

@@ -95,7 +95,7 @@ class Prediction_Data_Validation:
         try:
             path = os.path.join("Prediction_Raw_Files_Validated/", "Good_Raw/")
             if not os.path.isdir(path):
-                os.mkdirs(path)
+                os.makedirs(path)
             path = os.path.join("Prediction_Raw_Files_Validated/", "Bad_Raw/")
             if not os.path.isdir(path):
                 os.makedirs(path)
@@ -149,12 +149,12 @@ class Prediction_Data_Validation:
             path="Prediction_Raw_Files_Validated/"
             if os.path.isdir(path + 'Bad_Raw/'):
                 shutil.rmtree(path + 'Bad_Raw/')
-                file = open("Prediction_Logs/General_Log.txt,'a+")
+                file = open("Prediction_Logs/GeneralLog.txt,'a+")
                 self.logger.log(file, "BadRaw Directory Deleted Successfully!!!")
                 file.close()
 
         except OSError as e:
-            file = open("Prediction_Logs/General_Log.txt", 'a+')
+            file = open("Prediction_Logs/GeneralLog.txt", 'a+')
             self.logger.log(file, "Error while Deleting Directory : %s" %e)
             file.close()
             raise OSError        
@@ -180,10 +180,10 @@ class Prediction_Data_Validation:
             if os.path.isdir(source):
                 path = "predictionArchiveBadData"
                 if not os.path.isdir(path):
-                    os.mkdirs(path)
+                    os.makedirs(path)
                 dest = "predictionArchiveBadData/BadData_" + str(date) + "_" + str(time)
                 if not os.path.isdir(dest):
-                    os.mkdirs(dest)
+                    os.makedirs(dest)
                 files = os.listdir(source)
                 for f in files:
                     if f not in os.listdir(dest):

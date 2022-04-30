@@ -67,17 +67,17 @@ class DBOperation:
         session.execute("USE %s;" % DatabaseName)
         goodFilePath= self.goodFilePath
         onlyfiles = [f for f in listdir(goodFilePath)]
-        log_file = open()
+        log_file = open("Prediction_Logs/DbTableCreateLog.txt", 'a+')
 
         for file in onlyfiles:
-            df = pd.read_excel(file)
+            df = pd.read_excel(goodFilePath +'/'+ file)
             cols =[i[1] for i in enumerate(df)]
             try:
                 query = 'DROP TABLE IF EXISTS Good_Raw_Data;'
                 session.execute(query)
 
                 query = f"""CREATE TABLE Good_Raw_Data(id int  PRIMARY KEY, "{cols[0]}" float,"{cols[1]}" float,"{cols[2]}" float,"{cols[3]}" float,
-                        "{cols[4]}" float,"{cols[5]}" float,"{cols[6]}" float,"{cols[7]}" float,"{cols[8]}" float);"""
+                        "{cols[4]}" float,"{cols[5]}" float,"{cols[6]}" float,"{cols[7]}" float);"""
                 session.execute(query)
 
                 file = open("Prediction_Logs/DBTableCreateLog.txt", 'a+')
@@ -121,7 +121,7 @@ class DBOperation:
                 values = [i for i in list_]
                 for i in range(len(values)):
                     try:
-                        query=f"""INSERT INTO Good_Raw_Data(id,"{cols[0]}","{cols[1]}","{cols[2]}","{cols[3]}","{cols[4]}","{cols[5]}","{cols[6]}","{cols[7]}","{cols[8]}") VALUES({i},{values[i][0]},{values[i][1]},{values[i][2]},{values[i][3]},{values[i][4]},{values[i][5]},{values[i][6]},{values[i][7]},{values[i][8]});"""
+                        query=f"""INSERT INTO Good_Raw_Data(id,"{cols[0]}","{cols[1]}","{cols[2]}","{cols[3]}","{cols[4]}","{cols[5]}","{cols[6]}","{cols[7]}") VALUES({i},{values[i][0]},{values[i][1]},{values[i][2]},{values[i][3]},{values[i][4]},{values[i][5]},{values[i][6]},{values[i][7]});"""
                         session.execute(query)
                         self.logger.log(log_file, "%s: Data inserted into table successfully!!" % file)
                     except Exception as e:
@@ -152,7 +152,7 @@ class DBOperation:
         self.fileFromDb = 'Prediction_FileFromDB/'
         self.fileName = 'InputFile.csv'
         log_file = open("Prediction_Logs/ExportToCsv.txt",'a+')
-        session = self.dataBaseConnection(DatabaseName)
+        session = self.dataBaseConnection()
         session.execute("USE %s;" % DatabaseName)
 
         try:
@@ -171,7 +171,7 @@ class DBOperation:
             #Sorting rows and columns and exporting to csv file
             sortfile = pd.read_csv(self.fileFromDb + self.fileName)
             sortfile = sortfile.sort_values(['Id']).drop('Id',axis=1)
-            sortfile = sortfile[['Cement', 'Blast', 'Fly', 'Water', 'Superplasticizer', 'Coarse', 'Fine','Age', 'Concrete']]
+            sortfile = sortfile[['Cement', 'Blast', 'Fly', 'Water', 'Superplasticizer', 'Coarse', 'Fine','Age']]
             sortfile.to_csv(self.fileFromDb + self.fileName, index=False)
 
             self.logger.log(log_file, "File exported successfully!!!")

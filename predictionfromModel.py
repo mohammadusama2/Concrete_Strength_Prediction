@@ -60,7 +60,7 @@ class prediction:
             result = pandas.DataFrame(result,columns=['Predictions'])
             path = "Prediction_Output_File/Predictions.csv" 
             result.to_csv("Prediction_Output_File/Predictions.csv", header = True)  
-            self.log_writer.log(self.file_object), 'End of Prediction_Output_File.csv'
+            self.log_writer.log(self.file_object, 'End of Prediction')
         except Exception as ex:
             self.log_writer.log(self.file_object, 'Error occured while running the prediction!! Error:: %s' % ex)
             raise ex

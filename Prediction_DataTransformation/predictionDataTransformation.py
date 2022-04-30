@@ -1,7 +1,8 @@
-from cmath import log
 from datetime import datetime
 from os import listdir
 import pandas as pd
+import xlrd
+import xlwt
 from Application_Logging.logger import App_Logger
 
 class dataTransform:
@@ -33,7 +34,7 @@ class dataTransform:
         try:
             onlyfiles = [f for f in listdir(self.goodDataPath)]
             for file in onlyfiles:
-                data = pd.read_csv(self.goodDataPath+"/" + file)
+                data = pd.read_excel(self.goodDataPath+"/" + file)
                 data=data.rename(columns= lambda x: x.split(" ")[0])
 
                 data.to_excel(self.goodDataPath+"/" + file, index=False, header=True)
