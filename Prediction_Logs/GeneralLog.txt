@@ -1,0 +1,5 @@
+2022-05-01/03:37,09		Error while Deleting Directory : [Errno 2] No such file or directory: "Prediction_Logs/GeneralLog.txt,'a+"
+2022-05-01/03:37,10		GoodRaw Directory deleted successfully!!!
+2022-05-01/03:39,14		GoodRaw Directory deleted successfully!!!
+2022-05-01/03:39,14		Bad Files moved to archive
+2022-05-01/03:39,14		Bad Raw Data folder deleted successfully!!!

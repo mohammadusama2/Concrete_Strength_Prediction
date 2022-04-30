@@ -1,0 +1,25 @@
+2022-05-01/03:37,09		 Start of validation of files for prediction!!
+2022-05-01/03:37,10		 Start of validation of files for prediction!!
+2022-05-01/03:37,10		Raw Data Validation Complete!!
+2022-05-01/03:37,10		Raw Data Transformation Started!!!
+2022-05-01/03:37,11		Raw Data Transformation Completed!!
+2022-05-01/03:37,11		Creating Prediction_Database and tables on the basis of given schema!!!
+2022-05-01/03:37,22		Table creation Completed!!
+2022-05-01/03:37,22		Insertion of Data into Table started!!!!
+2022-05-01/03:39,14		Insertion in Table completed!!!
+2022-05-01/03:39,14		Deleting Good Data Folder!!!
+2022-05-01/03:39,14		Good_Data folder deleted!!!
+2022-05-01/03:39,14		Moving bad files to Archive and deleting Bad_Data folder!!!
+2022-05-01/03:39,14		Bad files moved to archive!! Bad folder Deleted!!
+2022-05-01/03:39,14		Validation Operation completed!!
+2022-05-01/03:39,14		Extracting csv file from table
+2022-05-01/03:39,58		 Start of validation of files for prediction!!
+2022-05-01/03:40,20		Raw Data Validation Complete!!
+2022-05-01/03:40,20		Raw Data Transformation Started!!!
+2022-05-01/03:40,20		Raw Data Transformation Completed!!
+2022-05-01/03:40,20		Creating Prediction_Database and tables on the basis of given schema!!!
+2022-05-01/03:36,01		 Start of validation of files for prediction!!
+2022-05-01/03:36,14		Raw Data Validation Complete!!
+2022-05-01/03:36,15		Raw Data Transformation Started!!!
+2022-05-01/03:36,18		Raw Data Transformation Completed!!
+2022-05-01/03:36,18		Creating Prediction_Database and tables on the basis of given schema!!!

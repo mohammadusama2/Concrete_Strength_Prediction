@@ -1,0 +1,6 @@
+2022-05-01/03:36,01		Invalid File Name!! File is moved to BadRaw folder :: .gitkeep
+2022-05-01/03:36,01		Valid File Name!! File is moved to GoodRaw folder :: Concrete_Data.xls
+2022-05-01/03:37,10		Invalid File Name!! File is moved to BadRaw folder :: .gitkeep
+2022-05-01/03:37,10		Valid File Name!! File is moved to GoodRaw folder :: Concrete_Data.xls
+2022-05-01/03:39,58		Invalid File Name!! File is moved to BadRaw folder :: .gitkeep
+2022-05-01/03:39,58		Valid File Name!! File is moved to GoodRaw folder :: Concrete_Data.xls

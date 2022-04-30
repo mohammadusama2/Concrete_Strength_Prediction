@@ -1,0 +1,8 @@
+2022-05-01/03:36,01		LengthOfFirstWordInFile:: 8	LengthOfSecondWordInFile:: 4	NumberofColumns:: 8
+
+2022-05-01/03:37,09		LengthOfFirstWordInFile:: 8	LengthOfSecondWordInFile:: 4	NumberofColumns:: 8
+
+2022-05-01/03:37,10		LengthOfFirstWordInFile:: 8	LengthOfSecondWordInFile:: 4	NumberofColumns:: 8
+
+2022-05-01/03:39,58		LengthOfFirstWordInFile:: 8	LengthOfSecondWordInFile:: 4	NumberofColumns:: 8
+
