@@ -17,23 +17,31 @@ app = Flask(__name__)
 dashboard.bind(app)
 CORS(app)
 
+
 @app.route('/', methods=['GET'])
+@cross_origin()
 def home():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET','POST'])
+@cross_origin()
 def predictRouteClient():
     try:
-        if request.json is not None:
-            path = request.json['filepath'] 
+        #if request.json is not None:
+        #    path = request.json['filepath']
+        folder_path = "Prediction_Batch_Files"
+        if folder_path is not None:
+            path = folder_path
+             
             
             pred_val = pred_validation(path) #Object initialization
+
             pred_val.prediction_validation()  #calling the prediction validation function
 
             pred = prediction(path) #object initialization
 
             #predicting for datast present in database
-            path, json_predictions = pred.predictionfromModel()
+            path, json_predictions = pred.predictionFromModel()
             return Response("Prediction File created at !!!"  +str(path) + 'and few of the predictions are ' +str(json.loads(json_predictions)))
 
         elif request.form is not None:
@@ -46,7 +54,7 @@ def predictRouteClient():
 
             #prediciting for dataset present in databse
             path, json_predictions = pred.predictionFromModel()
-            return Response('Prediction File created at !!!'  +str(path) + 'and few of the predicitons are ' +str(json.loads(json_predictions)) )   
+            return Response('Prediction File created at !!!'  +str(path))   
 
         else:
             print('Nothing Matched')
