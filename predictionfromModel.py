@@ -64,4 +64,4 @@ class prediction:
         except Exception as ex:
             self.log_writer.log(self.file_object, 'Error occured while running the prediction!! Error:: %s' % ex)
             raise ex
-        return path
+        return path, result.head().to_json(orient="records")

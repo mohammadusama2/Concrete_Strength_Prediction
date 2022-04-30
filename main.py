@@ -1,3 +1,5 @@
+
+
 from wsgiref import simple_server
 from flask import Flask, request, render_template
 from flask import Response
@@ -28,7 +30,7 @@ def home():
 def predictRouteClient():
     try:
         #if request.json is not None:
-        #    path = request.json['filepath']
+        #   path = request.json['filepath']
         folder_path = "Prediction_Batch_Files"
         if folder_path is not None:
             path = folder_path
@@ -54,7 +56,7 @@ def predictRouteClient():
 
             #prediciting for dataset present in databse
             path, json_predictions = pred.predictionFromModel()
-            return Response('Prediction File created at !!!'  +str(path))   
+            return Response('Prediction File created at !!!'  +str(path) + 'and few of the predictions are' + str(json.loads(json_predictions)))   
 
         else:
             print('Nothing Matched')
