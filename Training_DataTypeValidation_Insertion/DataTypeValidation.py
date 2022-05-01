@@ -83,6 +83,7 @@ class DBOperation:
                 log_file = open("Training_Logs/DBTableCreateLog.txt", 'a+')
                 self.logger.log(log_file, "Table Good_Raw_Data created successfully")
                 log_file.close()
+           
 
             except Exception as e:
                 log_file = open("Training_Logs/DBTableCreateLog.txt", 'a+')
@@ -92,6 +93,7 @@ class DBOperation:
                 self.logger.log(log_file, "%s Database disconnected successfully!!" % DatabaseName)
                 log_file.close()
                 raise e
+        session.shutdown()     
 
 
 
@@ -132,8 +134,8 @@ class DBOperation:
                 self.logger.log(log_file, "Error while inserting data into table: %s" %e)
                 shutil.move(goodFilePath + '/' + file, badFilePath)
                 self.logger.log(log_file,"File Move Successfully %s" % file)
-                log_file.close()  
-
+                log_file.close() 
+        session.shutdown()         
         log_file.close()                      
 
         
@@ -179,6 +181,8 @@ class DBOperation:
 
         except Exception as e:
             self.logger.log(log_file, " File export failed. Error: %s" % e)
-            log_file.close()    
+            log_file.close()
+
+        session.shutdown()        
 
 

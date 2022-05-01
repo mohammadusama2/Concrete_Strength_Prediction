@@ -93,6 +93,8 @@ class DBOperation:
                 file.close()
                 raise e
 
+        session.shutdown()         
+
 
 
     def insertIntoTableGoodData(self, DatabaseName):
@@ -133,7 +135,8 @@ class DBOperation:
                 shutil.move(goodFilePath + '/' + file, badFilePath)
                 self.logger.log(log_file,"File Move Successfully %s" % file)
                 log_file.close()
-      
+        
+        session.shutdown() 
         log_file.close()                      
 
         
@@ -179,6 +182,8 @@ class DBOperation:
 
         except Exception as e:
             self.logger.log(log_file, " File export failed. Error: %s" % e)
-            log_file.close()    
+            log_file.close() 
+
+        session.shutdown()        
 
 
