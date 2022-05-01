@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from wsgiref import simple_server
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_file
 from flask import Response
 from flask_cors import CORS, cross_origin
 import flask_monitoringdashboard as dashboard
@@ -94,6 +94,24 @@ def trainRouteClient():
         return Response("Error Occured! %s" %e)
 
     return Response("Training Successfull!!")
+
+
+
+
+@app.route('/download', methods = ['GET','POST'])
+def download():
+    try:
+        folder_path = "Prediction_Output_File"
+        file = "Predictions.csv" 
+        if folder_path is not None:
+            return send_file(folder_path + '/'+ file, as_attachment=True)
+
+        else:
+            print("No prediction file found. Start training the model to generate one.")  
+
+    except Exception as e:
+        return Response('Error Occured! %s' %e)          
+
 
 
 
