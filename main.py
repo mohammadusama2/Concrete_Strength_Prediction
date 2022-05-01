@@ -15,7 +15,7 @@ from predictionfromModel import prediction
 os.putenv('LANG', 'en_US.UTF-8')
 os.putenv('LC_ALL', 'en_US.UTF-8')
 
-app = Flask(__name__,template_folder='templates')
+app = Flask(__name__)
 dashboard.bind(app)
 CORS(app)
 
